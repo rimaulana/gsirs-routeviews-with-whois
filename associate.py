@@ -42,17 +42,52 @@ import threading
 # for t in threads:
 #     t.join()
 # output.close()
-url = "https://stat.ripe.net/data/whois/data.json?resource=4.15.210.128/26"
+arin = "23.29.96.0/24"
+ripe = "5.1.112.0/24"
+lacnic = "148.249.0.0/24"
+apnic = "1.2.4.0/24"
+afrinic = "41.0.0.0/18"
+url = "https://stat.ripe.net/data/whois/data.json?resource="+afrinic
+
 response = urllib.urlopen(url)
 whois = json.loads(response.read())
-for record in whois["data"]["records"]:
-	# ARIN -> NetRange, LACNIC -> inetnum, RIPE -> inetnum, AFRINIC -> inetnum, APNIC -> inetnum
-	if record[0]["key"] == "NetRange":
-		for item in record:
-			if item["key"] == "CIDR":
-				# do stuff
-			if item["key"] == "RegDate": # ARIN
-				# do stuff
-			if item["key"] == "CIDR":
-				# do stuff
-			if item["key"] == "created": # LACNIC, RIPE(different format than lacnic)
+print whois["data"]["authorities"]
+prefix = 0
+created = ""
+iprange = ""
+if "arin" in whois["data"]["authorities"]:
+	for record in whois["data"]["records"]:
+		isChange = False
+		# ARIN -> NetRange, LACNIC -> inetnum, RIPE -> inetnum, AFRINIC -> inetnum, APNIC -> inetnum
+		if record[0]["key"] == "NetRange":
+			for item in record:
+				if item["key"] == "CIDR":
+					print item["value"]
+					buff = item["value"].split('/')
+					if prefix < int(buff[1]):
+						prefix = int(buff[1])
+						iprange = buff[0]
+						isChange = True
+				if item["key"] == "RegDate": # ARIN
+					if isChange:
+						created = item["value"]
+else:
+	for record in whois["data"]["records"]:
+		isChange = False
+		if record[0]["key"] == "inetnum":
+			for item in record:
+				if item["key"] == "inetnum":
+					print item["value"]
+					buff = item["value"].split('/')
+					if prefix < int(buff[1]):
+						prefix = int(buff[1])
+						iprange = buff[0]
+						isChange = True
+				if item["key"] == "created": # LACNIC, RIPE(different format than lacnic)
+					if isChange:
+						if "ripe" in whois["data"]["authorities"]:
+							buff = item["value"].split('T')
+							created = buff[0]
+						elif "lacnic" in whois["data"]["authorities"]:
+							created = item["value"][0:4]+"-"+item["value"][4:6]+"-"+item["value"][6:8]
+print iprange+"/"+str(prefix)+" created: "+created
