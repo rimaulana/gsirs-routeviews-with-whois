@@ -1,9 +1,10 @@
 import csv
 import os
+import sys
 
 rootFolder = os.path.abspath(os.path.dirname(__file__))
 MaxRecordPerFile = 4
-with open("test.csv") as source:
+with open(sys.argv[1]) as source:
     reader = csv.DictReader(source)
     writeCounter= 0
     fileCounter = 0

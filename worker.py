@@ -2,12 +2,14 @@ import json
 import urllib
 import csv
 import shutil
+import os
 import sys
 
-sourceFile = '{folder}/{filename}'.format(folder="worked",filename=sys.argv[1])
-resultDest = '{folder}/{filename}'.format(folder="result",filename=sys.argv[1])
-poolDest = '{folder}/{filename}'.format(folder="pool",filename=sys.argv[1])
-result = []
+rootFolder = os.path.abspath(os.path.dirname(__file__))
+sourceFile = '{root}/{folder}/{filename}'.format(root=rootFolder,folder="worked",filename=sys.argv[1])
+resultDest = '{root}/{folder}/{filename}'.format(root=rootFolder,folder="result",filename=sys.argv[1])
+poolDest   = '{root}/{folder}/{filename}'.format(root=rootFolder,folder="pool",filename=sys.argv[1])
+result     = []
 
 with open(sourceFile) as source:
     reader = csv.DictReader(source)
