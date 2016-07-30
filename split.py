@@ -1,5 +1,7 @@
 import csv
+import os
 
+rootFolder = os.path.abspath(os.path.dirname(__file__))
 MaxRecordPerFile = 4
 with open("test.csv") as source:
     reader = csv.DictReader(source)
@@ -7,7 +9,7 @@ with open("test.csv") as source:
     fileCounter = 0
     for line in reader:
         if writeCounter == 0:
-            fileName = '{folder}/{name}.{frmt}'.format(folder="pool",name=str(fileCounter),frmt="csv")
+            fileName = '{root}/{folder}/{name}.{frmt}'.format(root=rootFolder,folder="pool",name=str(fileCounter),frmt="csv")
             writer = open(fileName,"w")
             # Writing header
             writer.write("\"ORIGIN\",\"DATE\",\"ROUTE\",\"LENGTH\"\n")
