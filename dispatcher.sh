@@ -17,16 +17,20 @@ do
         if [[ $((poolCount)) > 0 ]]; then
             activeWorker=`ps aux | grep worker.py | wc -l`
             newSpawn=$((maxActiveWorker - activeWorker + 1))
-            poolFiles=($(ls $ROOTDIR/pool/))
-            for file in ${poolFiles[@]}
+            #poolFiles=($(ls $ROOTDIR/pool/))
+            #for file in ${poolFiles[@]}
+            #do
+                #if [[ $((newSpawn)) > 0 ]]; then
+            for (( c=$newSpawn; c>0; c--))
             do
-                if [[ $((newSpawn)) > 0 ]]; then
-                    mv $ROOTDIR/pool/$file $ROOTDIR/worked/$file
-                    nohup python $ROOTDIR/worker.py $file &
-                    newSpawn=$((newSpawn - 1))
-                fi
+                file=`ls -la $ROOTDIR/pool/ | awk 'NR==4 {print $9}'`
+                mv $ROOTDIR/pool/$file $ROOTDIR/worked/$file
+                nohup python $ROOTDIR/worker.py $file &
             done
+                    #newSpawn=$((newSpawn - 1))
+                #fi
+            #done
         fi
     fi
-    sleep 2
+    sleep 3
 done
