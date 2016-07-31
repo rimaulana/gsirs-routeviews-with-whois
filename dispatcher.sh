@@ -4,6 +4,7 @@ SCRIPT=$(readlink -f $0)
 ROOTDIR=`dirname $SCRIPT`
 maxActiveWorker=8
 
+echo "$$" > $ROOTDIR/dispatcher.pid
 while true
 do
     if ping -q -c 1 -W 1 www.google.com >/dev/null; then
@@ -27,5 +28,5 @@ do
             done
         fi
     fi
-    sleep 5s
+    sleep 2
 done
