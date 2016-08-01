@@ -5,6 +5,11 @@ ROOTDIR=`dirname $SCRIPT`
 
 while true
 do
+    if ping -q -c 1 -W 1 www.google.com >/dev/null; then
+        Connected=true
+    else
+        Connected=false
+    fi
     dispatcherPID=`cat $ROOTDIR/dispatcher.pid`
     poolFiles=`ls $ROOTDIR/pool/ | wc -l`
     workedFiles=`ls $ROOTDIR/worked/ | wc -l`
@@ -25,14 +30,22 @@ do
     done
     clear
     echo -e "Process ID         : \e[93m$$\e[0m"
+    if $Connected; then
+        echo -e "Internet status    : \e[92mConnected\e[0m"
+    else
+        echo -e "Internet status    : \e[91mDisonnected\e[0m"
+    fi
     if ps -p $dispatcherPID > /dev/null; then
         echo -e "Dispatcher status  : \e[92mRunning [ PID: \e[93m$dispatcherPID \e[92m]\e[0m"
     else
-        echo -e "Dispatcher status  : \e[31mStopped\e[0m"
+        echo -e "Dispatcher status  : \e[91mStopped\e[0m"
     fi
-    echo -e "Total active worker: \e[92m$((activeWorker - 1))\e[0m"
-    echo -e "Total worked files : \e[92m$workedFiles\e[0m"
-    echo -e "Progress           : \e[92m$resultFiles\e[0m out of \e[93m$totalFiles\e[0m"
-    echo -e "                   : \e[92m[\e[93m$lineProgress\e[92m] $percentage%\e[0m"
+    echo -e "Total active worker: \e[96m$((activeWorker - 1))\e[0m"
+    echo -e "Progress           : \e[96m$resultFiles\e[0m out of \e[93m$totalFiles\e[0m"
+    echo -e "Total worked files : \e[96m$workedFiles\e[0m"
+    echo -e "                   : \e[92m[\e[96m$lineProgress\e[92m] \e[96m$percentage\e[92m%\e[0m"
+    echo -e " "
+    echo -e "     \e[92mPID\tELAPSED(s)\tWORKED FILE\e[0m"
+    ps ax -o pid,etimes,cmd | grep worker.py | awk '{if($3 == "python"){print "     \033[93m"$1"\t\033[96m"$2"\t\t\033[93m"$5"\033[0m"}}'
     sleep 1
 done
