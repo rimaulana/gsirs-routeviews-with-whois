@@ -19,8 +19,8 @@ do
     fi
     if $Connected; then
         activeWorker=`ps ax -o cmd | grep worker.py | awk '{if($1 == "python"){print $1}}' | wc -l`
-        newSpawn=$((maxActiveWorker - activeWorker ))
-        if [[ $((newSpawn)) > 0 ]]; then
+        newSpawn=$((maxActiveWorker - activeWorker))
+        if [[ $newSpawn -gt 0 ]]; then
             list=($(ls $ROOTDIR/pool/ | head -$newSpawn))
             for file in ${list[@]}
             do

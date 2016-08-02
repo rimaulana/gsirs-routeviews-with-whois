@@ -4,6 +4,9 @@ SCRIPT=$(readlink -f $0)
 ROOTDIR=`dirname $SCRIPT`
 pingInterval=10
 pingTimer=0
+poolFiles=`ls $ROOTDIR/pool/ | wc -l`
+workedFiles=`ls $ROOTDIR/worked/ | wc -l`
+totalFiles=$((poolFiles + workedFiles))
 
 while true
 do
@@ -16,11 +19,9 @@ do
         pingTimer=0
     fi
     dispatcherPID=`cat $ROOTDIR/dispatcher.pid`
-    poolFiles=`ls $ROOTDIR/pool/ | wc -l`
     workedFiles=`ls $ROOTDIR/worked/ | wc -l`
     resultFiles=`ls $ROOTDIR/result/ | wc -l`
     activeWorker=`ps aux | grep worker.py | wc -l`
-    totalFiles=$((poolFiles + workedFiles))
     percentage=`awk -v t1="$totalFiles" -v t2="$resultFiles" 'BEGIN{printf "%.0f", t2/t1 * 100}'`
     progress=`awk -v t1="$totalFiles" -v t2="$resultFiles" 'BEGIN{printf "%.0f", t2/t1 * 20}'`
     remainder=$((20 - progress))
