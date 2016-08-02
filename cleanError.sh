@@ -3,8 +3,18 @@
 SCRIPT=$(readlink -f $0)
 ROOTDIR=`dirname $SCRIPT`
 
-removeFiles=($(diff $ROOTDIR/result/ $ROOTDIR/worked/ | awk '{print $4}'))
+workedList="$ROOTDIR/worked.list"
+resultList="$ROOTDIR/result.list"
+
+ls $ROOTDIR/result/ > $resultList
+ls $ROOTDIR/worked/ > $workedList
+
+removeFiles=($(diff $resultList $workedList | awk '{print $2}'))
 for file in ${removeFiles[@]}
 do
-    mv $ROOTDIR/worked/$file $ROOTDIR/pool/$file
+    if [[ ! -z "$file" ]]; then
+        mv $ROOTDIR/worked/$file $ROOTDIR/pool/$file
+    fi
 done
+rm $resultList
+rm $workedList
