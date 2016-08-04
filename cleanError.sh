@@ -13,6 +13,7 @@ removeFiles=($(diff $resultList $workedList | awk '{print $2}'))
 for file in ${removeFiles[@]}
 do
     if [[ ! -z "$file" ]]; then
+        echo $file
         mv $ROOTDIR/worked/$file $ROOTDIR/pool/$file
     fi
 done

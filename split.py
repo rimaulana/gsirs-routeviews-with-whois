@@ -14,12 +14,12 @@ with open(sys.argv[1]) as source:
             writer = open(fileName,"w")
             # Writing header
             writer.write("\"ORIGIN\",\"DATE\",\"ROUTE\",\"LENGTH\"\n")
-            writer.write('{0},{1},{2},{3}\n'.format(line['ROUTE'],line['DATE'],line['ROUTE'],line['LENGTH']))
+            writer.write('{0},{1},{2},{3}\n'.format(line['ORIGIN'],line['DATE'],line['ROUTE'],line['LENGTH']))
         elif writeCounter == (MaxRecordPerFile-1):
-            writer.write('{0},{1},{2},{3}\n'.format(line['ROUTE'],line['DATE'],line['ROUTE'],line['LENGTH']))
+            writer.write('{0},{1},{2},{3}\n'.format(line['ORIGIN'],line['DATE'],line['ROUTE'],line['LENGTH']))
             writer.close()
             fileCounter += 1
             writeCounter = -1
         else:
-            writer.write('{0},{1},{2},{3}\n'.format(line['ROUTE'],line['DATE'],line['ROUTE'],line['LENGTH']))
+            writer.write('{0},{1},{2},{3}\n'.format(line['ORIGIN'],line['DATE'],line['ROUTE'],line['LENGTH']))
         writeCounter += 1
